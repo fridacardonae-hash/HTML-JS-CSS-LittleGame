@@ -136,8 +136,8 @@
             background-position: center;
             
             /* original design por si no agarra el sprite */
-            background-color: var(--rosa-principal);
-            border: 3px solid var(--rosa-fuerte);
+            background-color: var(--azul-jugador-claro);
+            border: 3px solid var(--azul-jugador);
             border-radius: 50%;
             box-shadow: 0 4px 8px var(--negro-sombra-suave);
         }
@@ -341,4 +341,5 @@
             font-size: 10px;
             color: var(--rosa-fuerte);
             display: none;
+
         }
