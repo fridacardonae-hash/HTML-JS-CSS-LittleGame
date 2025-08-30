@@ -6,12 +6,15 @@
         const comboElement = document.getElementById('combo');
         const comboMeter = document.getElementById('comboMeter');
         const victory = document.getElementById('victory');
+        const gcwidth = document.querySelector('.game-container);
+        
         
         let gameState = {
             score: 0,
             combo: 0,
             time: 60,
-            playerX: 375, // Posición horizontal del jugador
+            //playerX: 375, // Posición horizontal del jugador
+            playerX: (gcwidth.width/2),
             gameActive: true,
             keys: {},
             hearts: [], // Array para múltiples corazones cayendo
@@ -375,4 +378,5 @@
         
         // starttt
         gameLoop();
+
         startTimer();
