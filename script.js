@@ -135,9 +135,9 @@
         function checkHeartCollisions() {
             const playerRect = {
                 x: gameState.playerX,
-                y: gameState.gameHeight - 50 - 70, // Altura dinámica - bottom del jugador - altura del jugador // Posición Y fija del jugador
-                width: 70,
-                height: 70 // ver como sacar estos 3 valores directamente de la clase .player1 de css
+                y: gameState.gameHeight - 20 - 65, // Altura dinámica - bottom del jugador - altura del jugador // Posición Y fija del jugador
+                width: 65,
+                height: 65 // ver como sacar estos 3 valores directamente de la clase .player1 de css
             };
             //const playerRect = player1.getBoundingClientRect();
             
