@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P:wght@400&display=swap');
+        
+        :root {
+            --rosa-principal: #FF69B4;
+            --rosa-claro: #FFB6C1;
+            --rosa-suave: #FFC0CB;
+            --rosa-muy-claro: #FFCCCB;
+            --rosa-fuerte: #FF1493;
+            --azul-jugador: #4169E1;
+            --azul-jugador-claro: #87CEEB;
+            --verde-pasto: #90EE90;
+            --verde-claro: #98FB98;
+            --azul-cielo: #87CEEB;
+            --dorado: #FFD700;
+            --blanco-transparente: rgba(255, 255, 255, 0.9);
+            --negro-sombra: rgba(0, 0, 0, 0.3);
+            --negro-sombra-suave: rgba(0, 0, 0, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: linear-gradient(135deg, var(--rosa-claro), var(--rosa-suave), var(--rosa-muy-claro));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 4px solid #8B4513;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px var(--negro-sombra);
+        }
+        
+        .game-world {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--azul-cielo) 0%, var(--verde-claro) 30%, var(--verde-pasto) 100%);
+            background-image: 
+                radial-gradient(circle at 20% 20%, var(--rosa-claro) 3px, transparent 3px),
+                radial-gradient(circle at 60% 40%, var(--rosa-suave) 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, var(--rosa-muy-claro) 4px, transparent 4px);
+            background-size: 80px 60px, 120px 90px, 100px 70px;
+            animation: sparkle 4s ease-in-out infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { background-position: 0 0, 0 0, 0 0; }
+            50% { background-position: 10px 5px, -15px -10px, 8px -8px; }
+        }
+        
+        /*agregar mi sprite*/
+        .cloud-player {
+            position: absolute;
+            top: 80px;
+            width: 120px;
+            height: 60px;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            border-radius: 50px;
+            animation: cloud-move 6s ease-in-out infinite;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes cloud-move {
+            0% { left: -60px; }
+            50% { left: calc(50% - 60px); }
+            100% { left: calc(100% - 60px); }
+        }
+        
+        .player2-in-cloud {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--rosa-fuerte), var(--rosa-claro));
+            
+            border: 2px solid var(--rosa-principal);
+            border-radius: 50%;
+            position: relative;
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        .player2-in-cloud::after {
+            /*content: '👼';*/
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url('assets/FridaFront.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        
+        .player1 {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            left: 375px; 
+            bottom: 30px; 
+            transition: left 0.1s ease;
+            z-index: 10;
+            
+            
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            
+            /* front */
+            background-image: url('assets/BrynFont.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            
+            /* original design por si no agarra el sprite */
+            background-color: var(--rosa-principal);
+            border: 3px solid var(--rosa-fuerte);
+            border-radius: 50%;
+            box-shadow: 0 4px 8px var(--negro-sombra-suave);
+        }
+        
+        /*movement sprites*/
+        .player1.running-right {
+            background-image: url('assets/BrynRight1.png');
+            animation: run-right 0.4s steps(2) infinite;
+        }
+        
+        .player1.running-left {
+            background-image: url('assets/BrynLeft1.png');
+            animation: run-left 0.4s steps(2) infinite;
+        }
+        
+        
+        @keyframes run-right {
+            0% { background-image: url('assets/BrynRight1.png'); }
+            50% { background-image: url('assets/BrynRight2.png'); }
+        }
+        
+        @keyframes run-left {
+            0% { background-image: url('assets/BrynLeft1.png'); }
+            50% { background-image: url('assets/BrynLeft2.png'); }
+        }
+        
+        /*original*/
+        .player1.no-sprites::after {
+            content: '👑';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+        }
+        
+        
+        .falling-heart {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(135deg, var(--rosa-fuerte), var(--rosa-principal));
+            border-radius: 50%;
+            animation: fall linear;
+            z-index: 8;
+            cursor: pointer;
+        }
+        
+        .falling-heart::before {
+            content: '💖';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+        }
+        
+        @keyframes fall {
+            0% { 
+                top: 140px; 
+                transform: rotate(0deg) scale(1);
+            }
+            100% { 
+                top: 600px; 
+                transform: rotate(360deg) scale(1.2);
+            }
+        }
+        .tree{
+            position: absolute;
+            bottom: 0;
+            width: 80px;
+            height: 120px;
+        }
+        .tree1{
+            left: 100px;
+            background:
+                radial-gradient(ellipse 40px 60px at 50% 50%, #228B22 0%, #32CD32 100%),
+                linear-gradient(#8B4513 0%, #A0522D 100%);
+            background-size: 100% 70%, 20% 100%;
+            background-position: center 0%, center 70%;
+            border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+        }
+        .tree2{
+            right: 150px;
+            background: 
+                radial-gradient(ellipse 45px 55px at 50% 50%, #FF69B4 0%, #FFB6C1 100%),
+                linear-gradient(#8B4513 0%, #A0522D 100%);
+            background-size: 100% 70%, 18% 100%;
+            background-position: center 0%, center 70%;
+            border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+        }
+        
+       
+        .flower {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, var(--rosa-principal), var(--rosa-claro));
+            border-radius: 50%;
+            animation: flower-sway 3s ease-in-out infinite;
+        }
+        
+        .flower::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: var(--dorado);
+            border-radius: 50%;
+        }
+        
+        @keyframes flower-sway {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(5deg); }
+        }
+        
+        
+        .ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+        }
+        
+        .score {
+            background: var(--blanco-transparente);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid var(--rosa-principal);
+            font-size: 12px;
+            color: var(--rosa-fuerte);
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: var(--blanco-transparente);
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--rosa-principal);
+            text-align: center;
+            font-size: 10px;
+            color: var(--rosa-fuerte);
+        }
+        
+        .victory {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            border: 4px solid var(--rosa-principal);
+            text-align: center;
+            font-size: 16px;
+            color: var(--rosa-fuerte);
+            display: none;
+            z-index: 30;
+        }
+        
+        
+        .score-popup {
+            position: absolute;
+            font-size: 14px;
+            color: var(--rosa-fuerte);
+            font-weight: bold;
+            z-index: 25;
+            animation: score-float 1s ease-out forwards;
+        }
+        
+        @keyframes score-float {
+            0% {
+                opacity: 1;
+                transform: translateY(0px) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.5);
+            }
+        }
+        
+        
+        .combo-meter {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: var(--blanco-transparente);
+            padding: 10px;
+            border-radius: 15px;
+            border: 2px solid var(--dorado);
+            font-size: 10px;
+            color: var(--rosa-fuerte);
+            display: none;
+        }

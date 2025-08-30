@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕 Catching My Heart</title>
+    <link rel = "stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-world">
+            <
+            <div class="cloud-player" id="cloudPlayer">
+                <div class="player2-in-cloud"></div>
+            </div>
+
+            <div class="tree tree1"></div>
+            <div class="tree tree2"></div>
+            
+            <div class="flower" style="left: 80px; bottom: 50px;"></div>
+            <div class="flower" style="right: 100px; bottom: 70px;"></div>
+            <div class="flower" style="left: 200px; bottom: 40px;"></div>
+            <div class="flower" style="right: 200px; bottom: 60px;"></div>
+            <div class="flower" style="left: 500px; bottom: 45px;"></div>
+            
+            <div class="player1" id="player1"></div>
+            
+            <!-- UI -->
+            <div class="ui">
+                <div class="score">Hearts: <span id="score">0</span></div>
+                <div class="score">Time: <span id="time">60</span>s</div>
+                <div class="score">Combo: <span id="combo">0</span>x</div>
+            </div>
+            
+            
+            <div class="combo-meter" id="comboMeter">
+                <div>🔥 SUPER COMBO!</div>
+                <div><span id="comboCount">0</span>x consecutive</div>
+            </div>
+            
+            <div class="controls">
+                👑 A/D o ← → to move | Catch all the hearts! 💕
+            </div>
+            
+            <div class="victory" id="victory">
+                <div>🎉 ¡HEARTS CATCHED! 🎉</div>
+                <div style="margin: 10px 0; font-size: 12px;">
+                    You got <span id="finalScore">0</span> hearts! 💕
+                </div>
+                <button onclick="restartGame()" style="
+                    font-family: 'Press Start 2P'; 
+                    padding: 10px 20px; 
+                    background: var(--rosa-principal); 
+                    color: white; 
+                    border: none; 
+                    border-radius: 10px; 
+                    cursor: pointer;
+                    font-size: 8px;
+                    margin-top: 10px;
+                ">Play again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src = "script.js"></script>
+    
+</body>
+</html>
