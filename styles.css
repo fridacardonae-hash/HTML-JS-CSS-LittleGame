@@ -260,8 +260,8 @@
         
         .player1 {
             position: absolute;
-            width: 70px;
-            height: 70px;
+            width: 65px;
+            height: 65px;
             left: 375px; 
             bottom: 50px; 
             transition: left 0.1s ease;
