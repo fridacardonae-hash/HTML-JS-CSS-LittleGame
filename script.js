@@ -6,24 +6,83 @@
         const comboElement = document.getElementById('combo');
         const comboMeter = document.getElementById('comboMeter');
         const victory = document.getElementById('victory');
-        const gcwidth = document.querySelector('.game-container);
-        
         
         let gameState = {
             score: 0,
             combo: 0,
             time: 60,
-            //playerX: 375, // Posición horizontal del jugador
-            playerX: (gcwidth.width/2),
+            playerX: 375, // ajuste dinamico
             gameActive: true,
             keys: {},
-            hearts: [], // Array para múltiples corazones cayendo
+            hearts: [], // Array para  corazones 
             lastHeartTime: 0,
             heartSpawnRate: 1500, // Milisegundos entre corazones
             comboTimer: 0,
-            playerState: 'idle', // 'idle', 'running-left', 'running-right'
-            animationTimeout: null
+            playerState: 'idle', 
+            animationTimeout: null,
+            gameWidth: 800, // ajuste dinamico
+            gameHeight: 600, // ajuste dinamico
+            isMobile: false
+
         };
+        function detectMobile() {
+            gameState.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                                || window.innerWidth <= 768;
+            return gameState.isMobile;
+        }
+
+        function updateGameDimensions() {
+            const container = document.querySelector('.game-container');
+            gameState.gameWidth = container.clientWidth;
+            gameState.gameHeight = container.clientHeight;
+            
+            // Ajustar posición inicial del jugador al centro
+            gameState.playerX = gameState.gameWidth / 2 - 35; // para centrar menos la mitad del ancho del player
+        }
+        function setupMobileControls() {
+            const btnLeft = document.getElementById('btnLeft');
+            const btnRight = document.getElementById('btnRight');
+            
+            // Eventos táctiles para botón izquierdo
+            btnLeft.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                gameState.keys['ArrowLeft'] = true;
+            });
+            
+            btnLeft.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                gameState.keys['ArrowLeft'] = false;
+            });
+            
+            // Eventos táctiles para botón derecho
+            btnRight.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                gameState.keys['ArrowRight'] = true;
+            });
+            
+            btnRight.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                gameState.keys['ArrowRight'] = false;
+            });
+
+            btnLeft.addEventListener('mousedown', () => gameState.keys['ArrowLeft'] = true);
+            btnLeft.addEventListener('mouseup', () => gameState.keys['ArrowLeft'] = false);
+            btnRight.addEventListener('mousedown', () => gameState.keys['ArrowRight'] = true);
+            btnRight.addEventListener('mouseup', () => gameState.keys['ArrowRight'] = false);
+        }
+
+        function handleResize() {
+            updateGameDimensions();
+            
+            // Reajustar posición del jugador si está fuera de los límites
+            gameState.playerX = Math.min(gameState.playerX, gameState.gameWidth - 70);
+            gameState.playerX = Math.max(gameState.playerX, 20);
+            
+            // Actualizar posición visual
+            if (player1) {
+                player1.style.left = gameState.playerX + 'px';
+            }
+        }
         
         // CREAR CORAZÓN QUE CAE
         function createFallingHeart() {
@@ -31,17 +90,19 @@
             const heart = document.createElement('div');
             heart.classList.add('falling-heart');
             
-            // Posición X aleatoria pero cerca de donde está la nube
+            // Posición X aleatoria 
             const cloudRect = cloudPlayer.getBoundingClientRect();
             const gameRect = document.querySelector('.game-world').getBoundingClientRect();
             const cloudRelativeX = cloudRect.left - gameRect.left;
             
-            // Corazón cae desde la nube con un poco de variación
-            const heartX = Math.max(20, Math.min(750, cloudRelativeX + Math.random() * 60 - 30));
+            // Corazón cae 
+            //const heartX = Math.max(20, Math.min(750, cloudRelativeX + Math.random() * 60 - 30));
+            const heartX = Math.max(20, Math.min(gameState.gameWidth - 45, cloudRelativeX + Math.random() * 60 - 30)); //ajuste dinamico
             heart.style.left = heartX + 'px';
             
             // Duración de caída aleatoria
-            const fallDuration = 3 + Math.random() * 2; // 3-5 segundos
+            //const fallDuration = 3 + Math.random() * 2; // 3-5 segundos
+            const fallDuration = gameState.isMobile ? 2.5 + Math.random() * 1.5 : 3 + Math.random() * 2;   //ajuste dinamico
             heart.style.animationDuration = fallDuration + 's';
             
             // Agregar al mundo y al array
@@ -54,7 +115,7 @@
                 caught: false
             });
             
-            // Remover corazón cuando termine la animación
+            // Remover corazón 
             setTimeout(() => {
                 if (heart.parentNode && !heart.caught) {
                     heart.remove();
@@ -74,9 +135,9 @@
         function checkHeartCollisions() {
             const playerRect = {
                 x: gameState.playerX,
-                y: 520, // Posición Y fija del jugador
-                width: 50,
-                height: 50
+                y: gameState.gameHeight - 50 - 70, // Altura dinámica - bottom del jugador - altura del jugador // Posición Y fija del jugador
+                width: 70,
+                height: 70 // ver como sacar estos 3 valores directamente de la clase .player1 de css
             };
             //const playerRect = player1.getBoundingClientRect();
             
@@ -85,11 +146,14 @@
                 
                 const elapsed = Date.now() - heartData.startTime;
                 const progress = elapsed / heartData.duration;
-                //const progress = Math.min(1, elapsed / heartData.duration);
+                
                 
                 // Calcular posición Y actual del corazón
-                const heartY = 140 + (460 * progress); // De 140px a 600px
-                
+                //const heartY = 140 + (460 * progress); // De 140px a 600px
+                const cloudBottom = 140; // Posición fija de la nube
+                const fallDistance = gameState.gameHeight - cloudBottom;
+                const heartY = cloudBottom + (fallDistance * progress);
+
                 const heartRect = {
                     x: heartData.x,
                     y: heartY,
@@ -204,20 +268,21 @@
             if (!gameState.gameActive) return;
             
             let isMoving = false;
+            const speed = gameState.isMobile ? 4 : 5; // Velocidad ajustada para móvil
             let movingRight = false;
             let movingLeft = false;
             
             // Movimiento horizontal
             if (gameState.keys['a'] || gameState.keys['A'] || gameState.keys['ArrowLeft']) {
-                gameState.playerX = Math.max(20, gameState.playerX - 5);
+                gameState.playerX = Math.max(20, gameState.playerX - speed);
                 isMoving = true;
-                movingLeft = true;
+                //movingLeft = true;
                 setPlayerAnimation('running-left');
             }
             if (gameState.keys['d'] || gameState.keys['D'] || gameState.keys['ArrowRight']) {
-                gameState.playerX = Math.min(730, gameState.playerX + 5);
+                gameState.playerX = Math.min(gameState.gameWidth - 70, gameState.playerX + speed);
                 isMoving = true;
-                movingRight = true;
+                //movingRight = true;
                 setPlayerAnimation('running-right');
             }
             
@@ -330,21 +395,20 @@
             document.querySelectorAll('.falling-heart').forEach(heart => heart.remove());
             document.querySelectorAll('.score-popup').forEach(popup => popup.remove());
             
-            // Reset
-            gameState = {
-                score: 0,
-                combo: 0,
-                time: 60,
-                playerX: 375,
-                gameActive: true,
-                keys: {},
-                hearts: [],
-                lastHeartTime: 0,
-                heartSpawnRate: 1500,
-                comboTimer: 0,
-                playerState: 'idle',
-                animationTimeout: null
-            };
+           updateGameDimensions();
+            
+            // Resetear estado
+            gameState.score = 0;
+            gameState.combo = 0;
+            gameState.time = 60;
+            gameState.gameActive = true;
+            gameState.keys = {};
+            gameState.hearts = [];
+            gameState.lastHeartTime = 0;
+            gameState.heartSpawnRate = gameState.isMobile ? 1200 : 1500; // Más frecuente en móvil
+            gameState.comboTimer = 0;
+            gameState.playerState = 'idle';
+            gameState.animationTimeout = null;
             
             // Resetear UI
             scoreElement.textContent = '0';
@@ -354,7 +418,7 @@
             comboMeter.style.display = 'none';
             
             
-            player1.style.left = '375px';
+            player1.style.left = gameState.playerX + 'px';
             setPlayerAnimation('idle');
             
             
@@ -377,6 +441,14 @@
         });
         
         // starttt
-        gameLoop();
+        detectMobile();
+        updateGameDimensions();
+        setupMobileControls();
 
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(handleResize, 100); // Pequeño delay para orientationchange
+        });
+
+        gameLoop();
         startTimer();
